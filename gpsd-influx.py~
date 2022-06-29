@@ -117,15 +117,15 @@ if __name__ == '__main__':
           }
         }
       ]
-      
-      influx_client = InfluxDBClient(influx_host, influx_port, influx_user, influx_pass, influx_db)
-      try :
-        influx_client.write_points(influx_json_body)
 
-        time.sleep(update_interval)
-      except Exception as e:
-        print(e)
-        time.sleep(update_interval)
+      influx_client = InfluxDBClient(influx_host, influx_port, influx_user, influx_pass, influx_db)
+
+      influx_client.write_points(influx_json_body)
+
+      time.sleep(update_interval)
+  except Exception as e:
+   print(e)
+   time.sleep(update_interval)
 
   except (KeyboardInterrupt, SystemExit): #when you press ctrl+c
     print( "\nKilling Thread...")
