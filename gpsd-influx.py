@@ -51,6 +51,7 @@ if __name__ == '__main__':
   parser.add_argument("--influx_port", "-p", help="influx server port", type=int, default=influx_port)
   parser.add_argument("--influx_host", "-a", help="influx server address", type=str, default=influx_host)
   parser.add_argument("--influx_db", "-b", help="influx database name", type=str, default=influx_db)
+  args = parser.parse_args()
   
   influx_db = args.influx_db
   influx_port = args.influx_port
