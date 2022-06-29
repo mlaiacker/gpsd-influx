@@ -8,6 +8,7 @@ import socket
 import sys
 import threading
 import time
+import argparse
 
 # Your InfluxDB Settings
 influx_host = 'localhost'
@@ -23,16 +24,7 @@ update_interval = 10
 # Do not change anything below this line
 hostname = socket.gethostname()
 
-# --------------------------------------------------------------------------------
-# Command Line Options
-options, remainder = getopt.gnu_getopt(
-  sys.argv[1:], 'd', ['debug'])
 
-debug = None
-
-for opt, arg in options:
-  if opt in ('-d', '--debug'):
-    debug = True
 
 # --------------------------------------------------------------------------------
 # GPS Thread
@@ -52,6 +44,20 @@ class GpsPoller(threading.Thread):
 # --------------------------------------------------------------------------------
 # GPS Loop
 if __name__ == '__main__':
+# --------------------------------------------------------------------------------
+# Command Line Options
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--debug","-d", help="print debug", action="store_true")
+  parser.add_argument("--influx_port", "-p", help="influx server port", type=int, default=influx_port)
+  parser.add_argument("--influx_host", "-h", help="influx server address", type=str, default=influx_host)
+  parser.add_argument("--influx_db", "-b", help="influx database name", type=str, default=influx_db)
+  
+  influx_db = args.influx_db
+  influx_port = args.influx_port
+  influx_host = args.influx_host
+  
+  debug = args.debug
+  
   # Create the thread
   gpsp = GpsPoller()
   try:
@@ -62,7 +68,8 @@ if __name__ == '__main__':
     time.sleep(5)
 
     # Start the loop
-    while True:
+    influx_client = InfluxDBClient(influx_host, influx_port, influx_user, influx_pass, influx_db)
+    while gpsp.running:
       gpsd_alt   = gpsd.fix.altitude
       gpsd_climb = gpsd.fix.climb
       gpsd_epc   = gpsd.fix.epc
@@ -118,14 +125,14 @@ if __name__ == '__main__':
         }
       ]
       
-      influx_client = InfluxDBClient(influx_host, influx_port, influx_user, influx_pass, influx_db)
+      
       try :
         influx_client.write_points(influx_json_body)
-
-        time.sleep(update_interval)
+      # sometime we get invalid number
       except Exception as e:
         print(e)
-        time.sleep(update_interval)
+        
+      time.sleep(update_interval)
 
   except (KeyboardInterrupt, SystemExit): #when you press ctrl+c
     print( "\nKilling Thread...")
