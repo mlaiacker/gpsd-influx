@@ -49,7 +49,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument("--debug","-d", help="print debug", action="store_true")
   parser.add_argument("--influx_port", "-p", help="influx server port", type=int, default=influx_port)
-  parser.add_argument("--influx_host", "-h", help="influx server address", type=str, default=influx_host)
+  parser.add_argument("--influx_host", "-a", help="influx server address", type=str, default=influx_host)
   parser.add_argument("--influx_db", "-b", help="influx database name", type=str, default=influx_db)
   
   influx_db = args.influx_db
