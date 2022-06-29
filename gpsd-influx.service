@@ -1,0 +1,13 @@
+[Unit]
+Description=gpsd-influxdb
+
+
+[Service]
+StandardOutput=journal
+ExecStart=/home/max/src/gpsd-influx/gpsd-influx.py
+Restart=always
+User=max
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
