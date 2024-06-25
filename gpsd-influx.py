@@ -84,6 +84,8 @@ if __name__ == '__main__':
       gpsd_mode  = gpsd.fix.mode
       gpsd_speed = gpsd.fix.speed
       gpsd_track = gpsd.fix.track
+      if math.isnan(gpsd_track) :
+        gpsd_track=""
 
       # Make sure we have a lat, lon and alt
       if None not in (gpsd_lat, gpsd_lon, gpsd_alt,):
